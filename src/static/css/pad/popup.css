@@ -66,6 +66,7 @@
   .popup-content {
     max-height: 80vh;
     overflow: auto;
+    min-width: unset;
   }
   .popup#users .popup-content {
     overflow: visible;
