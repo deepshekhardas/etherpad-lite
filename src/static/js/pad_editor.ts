@@ -86,9 +86,12 @@ const padeditor = (() => {
       // delete pad
       $('#delete-pad').on('click', () => {
         if (window.confirm(html10n.get('pad.delete.confirm'))) {
+          pad.socket.on('message', (data) => {
+            if (data.disconnect === 'deleted') {
+              window.location.href = '/';
+            }
+          });
           pad.collabClient.sendMessage({ type: 'PAD_DELETE', data: { padId: pad.getPadId() } });
-          // redirect to home page after deletion
-          window.location.href = '/';
         }
       })
 
