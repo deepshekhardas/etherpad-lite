@@ -48,7 +48,7 @@ We're looking for maintainers and have some funding available.  Please contact J
 ```yaml
 services:
   app:
-    user: "0:0"
+    user: "5001:0"
     image: etherpad/etherpad:latest
     tty: true
     stdin_open: true
@@ -132,7 +132,7 @@ site](https://static.etherpad.org).
 ### Plugin Installation
 
 You can install plugins from the admin web interface (e.g.,
-http://127.0.0.1:9001/admin/plugins).
+<http://127.0.0.1:9001/admin/plugins>).
 
 Alternatively, you can install plugins from the command line:
 
@@ -164,13 +164,13 @@ For user authentication, you are encouraged to run an [OpenID
 Connect](https://openid.net/connect/) identity provider (OP) and install the
 following plugins:
 
-  * [ep_openid_connect](https://github.com/ether/ep_openid_connect#readme) to
+* [ep_openid_connect](https://github.com/ether/ep_openid_connect#readme) to
     authenticate against your OP.
-  * [ep_guest](https://github.com/ether/ep_guest#readme) to create a
+* [ep_guest](https://github.com/ether/ep_guest#readme) to create a
     "guest" account that has limited access (e.g., read-only access).
-  * [ep_user_displayname](https://github.com/ether/ep_user_displayname#readme)
+* [ep_user_displayname](https://github.com/ether/ep_user_displayname#readme)
     to automatically populate each user's displayed name from your OP.
-  * [ep_stable_authorid](https://github.com/ether/ep_stable_authorid#readme) so
+* [ep_stable_authorid](https://github.com/ether/ep_stable_authorid#readme) so
     that each user's chosen color, display name, comment ownership, etc. is
     strongly linked to their account.
 
@@ -180,24 +180,32 @@ Run the following command in your Etherpad folder to upgrade
 
 1. Stop any running Etherpad (manual, systemd ...)
 2. Get present version
+
 ```sh
 git -P tag --contains
 ```
+
 3. List versions available
+
 ```sh
 git -P tag --list "v*" --merged
 ```
+
 4. Select the version
+
 ```sh
 git checkout v2.2.5
 git switch -c v2.2.5
 ```
+
 5. Upgrade Etherpad
+
 ```sh
 ./bin/run.sh
 ```
+
 6. Stop with [CTRL-C]
-7. Restart your Etherpad service
+2. Restart your Etherpad service
 
 ## Next Steps
 
@@ -232,7 +240,7 @@ edit `settings.json` and restart Etherpad each time.
 
 ### Customize the style with skin variants
 
-Open http://127.0.0.1:9001/p/test#skinvariantsbuilder in your browser and start
+Open <http://127.0.0.1:9001/p/test#skinvariantsbuilder> in your browser and start
 playing!
 
 ![Skin Variant](doc/public/etherpad_skin_variants.gif "Skin variants")
@@ -307,7 +315,7 @@ The official channel for contacting the development team is via the [GitHub
 issues](https://github.com/ether/etherpad-lite/issues).
 
 For **responsible disclosure of vulnerabilities**, please write a mail to the
-maintainers (a.mux@inwind.it and contact@etherpad.org).
+maintainers (<a.mux@inwind.it> and <contact@etherpad.org>).
 
 Join the official [Etherpad Discord
 Channel](https://discord.com/invite/daEjfhw).

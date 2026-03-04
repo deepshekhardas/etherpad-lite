@@ -1,9 +1,11 @@
 # Docker
 
-The official Docker image is available on https://hub.docker.com/r/etherpad/etherpad.
+The official Docker image is available on <https://hub.docker.com/r/etherpad/etherpad>.
 
 ## Downloading from Docker Hub
+
 If you are ok downloading a [prebuilt image from Docker Hub](https://hub.docker.com/r/etherpad/etherpad), these are the commands:
+
 ```bash
 # gets the latest published version
 docker pull etherpad/etherpad
@@ -19,11 +21,13 @@ All of the following instructions are as a member of the `docker` group.
 By default, the Etherpad Docker image is built and run in `production` mode: no development dependencies are installed, and asset bundling speeds up page load time.
 
 ### Rebuilding with custom settings
+
 Edit `<BASEDIR>/settings.json.docker` at your will. When rebuilding the image, this file will be copied inside your image and renamed to `settings.json`.
 
 **Each configuration parameter can also be set via an environment variable**, using the syntax `"${ENV_VAR}"` or `"${ENV_VAR:default_value}"`. For details, refer to `settings.json.template`.
 
 ### Rebuilding including some plugins
+
 If you want to install some plugins in your container, it is sufficient to list them in the ETHERPAD_PLUGINS build variable.
 The variable value has to be a space separated, double quoted list of plugin names (see examples).
 
@@ -56,18 +60,21 @@ via setting the `soffice` property in `<BASEDIR>/settings.json.docker` to
 ### Examples
 
 Build a Docker image from the currently checked-out code:
+
 ```bash
 docker build --tag <YOUR_USERNAME>/etherpad .
 ```
 
 Include two plugins in the container:
+
 ```bash
 docker build --build-arg ETHERPAD_PLUGINS="ep_comments_page ep_author_neat" --tag <YOUR_USERNAME>/etherpad .
 ```
 
-## Running your instance:
+## Running your instance
 
 To run your instance:
+
 ```bash
 docker run --detach --publish <DESIRED_PORT>:9001 <YOUR_USERNAME>/etherpad
 ```
@@ -90,12 +97,11 @@ The `settings.json.docker` available by default allows to control almost every s
 | `ADMIN_PASSWORD`   | the password for the `admin` user (leave unspecified if you do not want to create it)      |                                                                                                                                                                                                                                     |
 | `USER_PASSWORD`    | the password for the first user `user` (leave unspecified if you do not want to create it) |                                                                                                                                                                                                                                     |
 
-
 ### Database
 
 | Variable      | Description                                                    | Default                                                               |
 | ------------- | -------------------------------------------------------------- | --------------------------------------------------------------------- |
-| `DB_TYPE`     | a database supported by https://www.npmjs.com/package/ueberdb2 | not set, thus will fall back to `DirtyDB` (please choose one instead) |
+| `DB_TYPE`     | a database supported by <https://www.npmjs.com/package/ueberdb2> | not set, thus will fall back to `DirtyDB` (please choose one instead) |
 | `DB_HOST`     | the host of the database                                       |                                                                       |
 | `DB_PORT`     | the port of the database                                       |                                                                       |
 | `DB_NAME`     | the database name                                              |                                                                       |
@@ -105,7 +111,6 @@ The `settings.json.docker` available by default allows to control almost every s
 | `DB_FILENAME` | in case `DB_TYPE` is `DirtyDB` or `sqlite`, the database file. | `var/dirty.db`, `var/etherpad.sq3`                                    |
 
 If your database needs additional settings, you will have to use a personalized `settings.json.docker` and rebuild the container (or otherwise put the updated `settings.json` inside your image).
-
 
 ### Pad Options
 
@@ -122,7 +127,6 @@ If your database needs additional settings, you will have to use a personalized 
 | `PAD_OPTIONS_ALWAYS_SHOW_CHAT`   |             | `false` |
 | `PAD_OPTIONS_CHAT_AND_USERS`     |             | `false` |
 | `PAD_OPTIONS_LANG`               |             | `null`  |
-
 
 ### Shortcuts
 
@@ -151,17 +155,18 @@ If your database needs additional settings, you will have to use a personalized 
 | `PAD_SHORTCUTS_ENABLED_PAGE_UP`     |                                                  | `true`  |
 | `PAD_SHORTCUTS_ENABLED_PAGE_DOWN`   |                                                  | `true`  |
 
-
 ### Skins
 
 You can use the UI skin variants builder at `/p/test#skinvariantsbuilder`
 
 For the colibris skin only, you can choose how to render the three main containers:
+
 * toolbar (top menu with icons)
 * editor (containing the text of the pad)
 * background (area outside of editor, mostly visible when using page style)
 
 For each of the 3 containers you can choose 4 color combinations:
+
 * super-light
 * light
 * dark
@@ -174,14 +179,12 @@ For the editor container, you can also make it full width by adding `full-width-
 | `SKIN_NAME`     | either `no-skin`, `colibris` or an existing directory under `src/static/skins` | `colibris`                                                |
 | `SKIN_VARIANTS` | multiple skin variants separated by spaces                                     | `super-light-toolbar super-light-editor light-background` |
 
-
 ### Logging
 
 | Variable             | Description                                          | Default |
 | -------------------- | ---------------------------------------------------- | ------- |
 | `LOGLEVEL`           | valid values are `DEBUG`, `INFO`, `WARN` and `ERROR` | `INFO`  |
 | `DISABLE_IP_LOGGING` | Privacy: disable IP logging                          | `false` |
-
 
 ### Advanced
 
@@ -225,13 +228,14 @@ It is possible to add arbitrary configurations for plugins by setting the `EP__P
 For example, to configure the `ep_comments` plugin to use the `comments` database, you can set the following environment variables:
 
 The original config looks like this:
+
 ```json
 "ep_comments_page": {
   "highlightSelectedText": true
 },
 ```
-We have two paths ep_comments_page and highlightSelectedText, so we need to set the following environment variable:
 
+We have two paths ep_comments_page and highlightSelectedText, so we need to set the following environment variable:
 
 ```yaml
 EP__ep_comments_page__highlightSelectedText=true
@@ -243,44 +247,42 @@ Use a Postgres database, no admin user enabled:
 
 ```shell
 docker run -d \
-	--name etherpad         \
-	-p 9001:9001            \
-	-e 'DB_TYPE=postgres'   \
-	-e 'DB_HOST=db.local'   \
-	-e 'DB_PORT=4321'       \
-	-e 'DB_NAME=etherpad'   \
-	-e 'DB_USER=dbusername' \
-	-e 'DB_PASS=mypassword' \
-	etherpad/etherpad
+ --name etherpad         \
+ -p 9001:9001            \
+ -e 'DB_TYPE=postgres'   \
+ -e 'DB_HOST=db.local'   \
+ -e 'DB_PORT=4321'       \
+ -e 'DB_NAME=etherpad'   \
+ -e 'DB_USER=dbusername' \
+ -e 'DB_PASS=mypassword' \
+ etherpad/etherpad
 ```
 
 Run enabling the administrative user `admin`:
 
 ```shell
 docker run -d \
-	--name etherpad \
-	-p 9001:9001 \
-	-e 'ADMIN_PASSWORD=supersecret' \
-	etherpad/etherpad
+ --name etherpad \
+ -p 9001:9001 \
+ -e 'ADMIN_PASSWORD=supersecret' \
+ etherpad/etherpad
 ```
 
 Run a test instance running DirtyDB on a persistent volume:
 
 ```shell
 docker run -d \
-	-v etherpad_data:/opt/etherpad-lite/var \
-	-p 9001:9001 \
-	etherpad/etherpad
+ -v etherpad_data:/opt/etherpad-lite/var \
+ -p 9001:9001 \
+ etherpad/etherpad
 ```
-
-
 
 ## Ready to use Docker Compose
 
 ```yaml
 services:
   app:
-    user: "0:0"
+    user: "5001:0"
     image: etherpad/etherpad:latest
     tty: true
     stdin_open: true
@@ -322,7 +324,7 @@ services:
     # ports:
     #   - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data/pgdata
+      - postgres_data:/var/lib/postgresql/data
 
 volumes:
   postgres_data:
