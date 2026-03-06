@@ -38,6 +38,11 @@ const html10n = require('ep_etherpad-lite/static/js/vendors/html10n');
 // errors out unless given an absolute URL for a JavaScript-created element.
 const absUrl = (url) => new URL(url, window.location.href).href;
 
+const isBrowserExtensionError = (err: ErrorEvent | Error): boolean => {
+  const src = (err as ErrorEvent).filename || (err as Error).stack || '';
+  return /^(chrome-extension|moz-extension|safari-extension|safari-web-extension):\/\//i.test(src);
+};
+
 const eventFired = async (obj, event, cleanups = [], predicate = () => true) => {
   if (typeof cleanups === 'function') {
     predicate = cleanups;
@@ -51,11 +56,16 @@ const eventFired = async (obj, event, cleanups = [], predicate = () => true) => 
       cleanup();
       resolve();
     };
-    const errorCb = () => {
-      const err = new Error(`Ace2Editor.init() error event while waiting for ${event} event`);
-      debugLog(`${err} on object`, obj);
+    const errorCb = (err) => {
+      // Ignore errors injected by browser extensions (e.g. BitWarden FIDO2 scripts)
+      if (err && isBrowserExtensionError(err)) {
+        debugLog('Ace2Editor.init() ignoring browser extension error:', err);
+        return;
+      }
+      const error = new Error(`Ace2Editor.init() error event while waiting for ${event} event`);
+      debugLog(`${error} on object`, obj);
       cleanup();
-      reject(err);
+      reject(error);
     };
     cleanup = () => {
       cleanup = () => { };
