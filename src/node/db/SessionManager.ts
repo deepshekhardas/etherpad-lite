@@ -21,7 +21,7 @@
  */
 
 const CustomError = require('../utils/customError');
-import {firstSatisfies} from '../utils/promises';
+import { firstSatisfies } from '../utils/promises';
 import randomString from '../utils/randomstring';
 const db = require('./DB');
 const groupManager = require('./GroupManager');
@@ -36,7 +36,7 @@ const authorManager = require('./AuthorManager');
  *     sessionCookie, and is bound to a group with the given ID, then this returns the author ID
  *     bound to the session. Otherwise, returns undefined.
  */
-exports.findAuthorID = async (groupID:string, sessionCookie: string) => {
+exports.findAuthorID = async (groupID: string, sessionCookie: string) => {
   if (!sessionCookie) return undefined;
   /*
    * Sometimes, RFC 6265-compliant web servers may send back a cookie whose
@@ -65,7 +65,7 @@ exports.findAuthorID = async (groupID:string, sessionCookie: string) => {
   const sessionInfoPromises = sessionIDs.map(async (id) => {
     try {
       return await exports.getSessionInfo(id);
-    } catch (err:any) {
+    } catch (err: any) {
       if (err.message === 'sessionID does not exist') {
         console.debug(`SessionManager getAuthorID: no session exists with ID ${id}`);
       } else {
@@ -78,7 +78,7 @@ exports.findAuthorID = async (groupID:string, sessionCookie: string) => {
   const isMatch = (si: {
     groupID: string;
     validUntil: number;
-  }|null) => (si != null && si.groupID === groupID && now < si.validUntil);
+  } | null) => (si != null && si.groupID === groupID && now < si.validUntil);
   const sessionInfo = await firstSatisfies(sessionInfoPromises, isMatch) as any;
   if (sessionInfo == null) return undefined;
   return sessionInfo.authorID;
@@ -144,7 +144,7 @@ exports.createSession = async (groupID: string, authorID: string, validUntil: nu
   const sessionID = `s.${randomString(16)}`;
 
   // set the session into the database
-  await db.set(`session:${sessionID}`, {groupID, authorID, validUntil});
+  await db.set(`session:${sessionID}`, { groupID, authorID, validUntil });
 
   // Add the session ID to the group2sessions and author2sessions records after creating the session
   // so that the state is consistent.
@@ -155,7 +155,7 @@ exports.createSession = async (groupID: string, authorID: string, validUntil: nu
     db.setSub(`author2sessions:${authorID}`, ['sessionIDs', sessionID], 1),
   ]);
 
-  return {sessionID};
+  return { sessionID };
 };
 
 /**
@@ -163,7 +163,7 @@ exports.createSession = async (groupID: string, authorID: string, validUntil: nu
  * @param {String} sessionID The id of the session
  * @return {Promise<Object>} the sessioninfos
  */
-exports.getSessionInfo = async (sessionID:string) => {
+exports.getSessionInfo = async (sessionID: string) => {
   // check if the database entry of this session exists
   const session = await db.get(`session:${sessionID}`);
 
@@ -181,11 +181,12 @@ exports.getSessionInfo = async (sessionID:string) => {
  * @param {String} sessionID The id of the session
  * @return {Promise<void>} Resolves when the session is deleted
  */
-exports.deleteSession = async (sessionID:string) => {
+exports.deleteSession = async (sessionID: string) => {
   // ensure that the session exists
   const session = await db.get(`session:${sessionID}`);
   if (session == null) {
-    throw new CustomError('sessionID does not exist', 'apierror');
+    console.warn(`SessionManager.deleteSession: sessionID ${sessionID} does not exist. Skipping deletion.`);
+    return;
   }
 
   // everything is fine, use the sessioninfos
@@ -252,7 +253,7 @@ const listSessionsWithDBKey = async (dbkey: string) => {
   for (const sessionID of Object.keys(sessions || {})) {
     try {
       sessions[sessionID] = await exports.getSessionInfo(sessionID);
-    } catch (err:any) {
+    } catch (err: any) {
       if (err.name === 'apierror') {
         console.warn(`Found bad session ${sessionID} in ${dbkey}`);
         sessions[sessionID] = null;
@@ -272,4 +273,4 @@ const listSessionsWithDBKey = async (dbkey: string) => {
  * @return {boolean} If the value is an integer
  */
 // @ts-ignore
-const isInt = (value:number|string): boolean => (parseFloat(value) === parseInt(value)) && !isNaN(value);
+const isInt = (value: number | string): boolean => (parseFloat(value) === parseInt(value)) && !isNaN(value);

@@ -20,7 +20,7 @@
  */
 
 const CustomError = require('../utils/customError');
-import {randomString} from "../../static/js/pad_utils";
+import { randomString } from "../../static/js/pad_utils";
 const db = require('./DB');
 const padManager = require('./PadManager');
 const sessionManager = require('./SessionManager');
@@ -34,7 +34,7 @@ exports.listAllGroups = async () => {
   groups = groups || {};
 
   const groupIDs = Object.keys(groups);
-  return {groupIDs};
+  return { groupIDs };
 };
 
 /**
@@ -59,9 +59,13 @@ exports.deleteGroup = async (groupID: string): Promise<void> => {
 
   // Delete associated sessions in parallel. This should be done before deleting the group2sessions
   // record because deleting a session updates the group2sessions record.
-  const {sessionIDs = {}} = await db.get(`group2sessions:${groupID}`) || {};
+  const { sessionIDs = {} } = await db.get(`group2sessions:${groupID}`) || {};
   await Promise.all(Object.keys(sessionIDs).map(async (sessionId) => {
-    await sessionManager.deleteSession(sessionId);
+    try {
+      await sessionManager.deleteSession(sessionId);
+    } catch (err) {
+      console.warn(`Error deleting session ${sessionId} during group ${groupID} deletion:`, err);
+    }
   }));
 
   await Promise.all([
@@ -95,12 +99,12 @@ exports.doesGroupExist = async (groupID: string) => {
  */
 exports.createGroup = async () => {
   const groupID = `g.${randomString(16)}`;
-  await db.set(`group:${groupID}`, {pads: {}, mappings: {}});
+  await db.set(`group:${groupID}`, { pads: {}, mappings: {} });
   // Add the group to the `groups` record after the group's individual record is created so that
   // the state is consistent. Note: UeberDB's setSub() method atomically reads the record, updates
   // the appropriate property, and writes the result.
   await db.setSub('groups', [groupID], 1);
-  return {groupID};
+  return { groupID };
 };
 
 /**
@@ -108,12 +112,12 @@ exports.createGroup = async () => {
  * @param groupMapper the mapper of the group
  * @return {Promise<{groupID: string}|{groupID: *}>} a promise that resolves to the group ID
  */
-exports.createGroupIfNotExistsFor = async (groupMapper: string|object) => {
+exports.createGroupIfNotExistsFor = async (groupMapper: string | object) => {
   if (typeof groupMapper !== 'string') {
     throw new CustomError('groupMapper is not a string', 'apierror');
   }
   const groupID = await db.get(`mapper2group:${groupMapper}`);
-  if (groupID && await exports.doesGroupExist(groupID)) return {groupID};
+  if (groupID && await exports.doesGroupExist(groupID)) return { groupID };
   const result = await exports.createGroup();
   await Promise.all([
     db.set(`mapper2group:${groupMapper}`, result.groupID),
@@ -159,7 +163,7 @@ exports.createGroupPad = async (groupID: string, padName: string, text: string, 
   // create an entry in the group for this pad
   await db.setSub(`group:${groupID}`, ['pads', padID], 1);
 
-  return {padID};
+  return { padID };
 };
 
 /**
@@ -179,5 +183,5 @@ exports.listPads = async (groupID: string): Promise<{ padIDs: string[]; }> => {
   const result = await db.getSub(`group:${groupID}`, ['pads']);
   const padIDs = Object.keys(result);
 
-  return {padIDs};
+  return { padIDs };
 };

@@ -33,14 +33,9 @@
     loc.appendChild(document.createTextNode(`in ${url}`));
     loc.appendChild(document.createElement('br'));
     loc.appendChild(document.createTextNode(`at line ${line}:${col}`));
-    const stackSummary = document.createElement('p');
-    box.appendChild(stackSummary);
-    stackSummary.appendChild(document.createTextNode('Stack trace:'));
-    const stackBlock = document.createElement('blockquote');
-    box.appendChild(stackBlock);
-    const stack = document.createElement('pre');
-    stackBlock.appendChild(stack);
-    stack.appendChild(document.createTextNode(err.stack || err.toString()));
+    // NOTE: We do not display the stack trace to the user for security reasons (leakage).
+    // The full error object is still available in the browser's developer console.
+    console.error('Etherpad Load Error:', err);
 
     if (typeof originalHandler === 'function') originalHandler(...args);
   };
