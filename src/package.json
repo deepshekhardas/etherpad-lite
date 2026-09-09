@@ -36,7 +36,7 @@
     "cross-env": "^10.1.0",
     "cross-spawn": "^7.0.6",
     "ejs": "^4.0.1",
-    "esbuild": "^0.27.3",
+    "esbuild": "^0.28.1",
     "express": "^5.2.1",
     "express-rate-limit": "^8.2.1",
     "express-session": "^1.19.0",
@@ -74,7 +74,7 @@
     "tinycon": "0.6.8",
     "tsx": "4.21.0",
     "ueberdb2": "^5.0.23",
-    "underscore": "1.13.7",
+    "underscore": "1.13.8",
     "unorm": "1.6.0",
     "wtfnode": "^0.10.1"
   },
@@ -120,7 +120,7 @@
     "split-grid": "^1.0.11",
     "supertest": "^7.2.2",
     "typescript": "^5.9.3",
-    "vitest": "^4.0.18"
+    "vitest": "^5.0.0"
   },
   "engines": {
     "node": ">=18.18.2",
